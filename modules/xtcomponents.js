@@ -1,4 +1,4 @@
-$(function(argument) {
+$(function (argument) {
     function registerElements(argument) {
         registerQuickElement("ui-view", {
             "width": "100vw",
@@ -46,14 +46,18 @@ $(function(argument) {
     function registerQuickElement(name, style) {
         xtag.register(name, {
             lifecycle: {
-                created: function() {
+                created: function () {
                     $(this).css(defaultStyling);
                     $(this).css(style); //predefined
                     var that = this;
                     if (this.hasAttribute("theme")) {
                         setAttr(that, "theme", $(that).attr("theme"));
+                    } else {
+                        if (!this.hasAttribute("no-theme")) { //no theme
+                            setAttr(that, "theme", $(that).closest("ui-view").attr("theme"));
+                        }
                     }
-                    _.each(this.attributes, function(attr) {
+                    _.each(this.attributes, function (attr) {
                         //theme attr must be proccessed first
                         if (attr.name != "theme")
                             setAttr(that, attr.name, attr.value);
@@ -62,13 +66,13 @@ $(function(argument) {
 
 
                 },
-                attributeChanged: function(attrName, oldValue, newValue) {
+                attributeChanged: function (attrName, oldValue, newValue) {
                     console.log(attrName + ", " + newValue);
                     setAttr(this, attrName, newValue);
                 }
             },
             events: {
-                tap: function() {
+                tap: function () {
                     try {
                         eval($(this).attr("ontap"));
                     } catch (ex) {
@@ -99,13 +103,19 @@ $(function(argument) {
                     case "true":
                     case "yes":
                     case "1":
-                        obj.css({ "box-shadow": "0 2px 5px 0 rgba(0, 0, 0, 0.26)" });
+                        obj.css({
+                            "box-shadow": "0 2px 5px 0 rgba(0, 0, 0, 0.26)"
+                        });
                         break;
                     case "2":
-                        obj.css({ "box-shadow": "rgba(0, 0, 0, 0.247059) 0px 0px 8px 4px" });
+                        obj.css({
+                            "box-shadow": "rgba(0, 0, 0, 0.247059) 0px 0px 8px 4px"
+                        });
                         break;
                     case "3":
-                        obj.css({ "box-shadow": "rgba(0, 0, 0, 0.447059) 0px 0px 20px 3px" });
+                        obj.css({
+                            "box-shadow": "rgba(0, 0, 0, 0.447059) 0px 0px 20px 3px"
+                        });
                         break;
                 }
                 break;
@@ -131,7 +141,9 @@ $(function(argument) {
                 switch (value) {
                     case undefined:
                     case "":
-                        obj.css({ "box-shadow": "" });
+                        obj.css({
+                            "box-shadow": ""
+                        });
                         break;
                 }
                 break;
@@ -152,7 +164,9 @@ $(function(argument) {
                             "padding-left": "3vh",
                             "padding-right": "3vh",
                             "padding-top": "3vh",
-                            "padding-bottom": "3vh"
+                            "padding-bottom": "3vh",
+                            "margin-left": "1.5vw",
+                            "margin-top": "1vh",
                         });
                         break;
                     case "flat":
@@ -179,16 +193,34 @@ $(function(argument) {
                             "margin-top": "1vh",
                             "box-shadow": "0 2px 5px 0 rgba(0, 0, 0, 0.36)"
                         });
-                        if (obj[0].hasAttribute("no-anim")) {} else {
+                        if (obj[0].hasAttribute("no-anim")) { } else {
                             if (_.device.isTouch()) {
-                                obj.on("touchstart", function(argument) {
+                                obj.on("touchstart", function (argument) {
                                     if (obj.data("default-backcolor") == undefined)
                                         obj.data("default-backcolor", $(obj).css("background"));
-                                    $(obj).css({ "background": "rgb(170, 203, 200)" });
-                                    setTimeout(function(argument) {
-                                        $(obj).css({ "background": obj.data("default-backcolor") });
+                                    $(obj).css({
+                                        "background": "rgb(170, 203, 200)"
+                                    });
+                                    setTimeout(function (argument) {
+                                        $(obj).css({
+                                            "background": obj.data("default-backcolor")
+                                        });
                                     }, 600);
-                                })
+                                });
+                            } else {
+                                obj.on("mousedown", function (argument) {
+                                    console.log("mousedown");
+                                    if (obj.data("default-backcolor") == undefined)
+                                        obj.data("default-backcolor", $(obj).css("background"));
+                                    $(obj).css({
+                                        "background": "rgb(170, 203, 200)"
+                                    });
+                                    setTimeout(function (argument) {
+                                        $(obj).css({
+                                            "background": obj.data("default-backcolor")
+                                        });
+                                    }, 600);
+                                });
                             }
                         }
                         break;
@@ -207,6 +239,13 @@ $(function(argument) {
                             "color": "#fff"
                         });
                         break;
+                    case "ios":
+                        obj.css({
+                            "background": "linear-gradient(to bottom, rgba(162,181,202,1) 0%,rgba(54,92,149,1) 100%)",
+                            "box-shadow": "rgba(0, 0, 0, 0.84) 0px 0px 5px 1px",
+                            "color": "#fff"
+                        });
+                        break;
                 }
                 break;
             case "UI-VIEW":
@@ -218,6 +257,11 @@ $(function(argument) {
                     case "material":
                         obj.css({
                             "background": "#fafafa"
+                        });
+                        break;
+                        case "ios":
+                        obj.css({
+                            "background": "repeating-linear-gradient(   to right,   #b2c1d9,   #b2c1d9 5px,   #bcc8db 5px,   #bcc8db 10px )"
                         });
                         break;
                 }

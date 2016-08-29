@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>App</title>
     <style type="text/css">
+
     </style>
     <script type="text/javascript" src="modules/aa_jquery.js"></script>
     <script type="text/javascript" src="modules/aa_native.js"></script>
     <script type="text/javascript" src="modules/xtag.js"></script>
     <script type="text/javascript" src="modules/xtcomponents.js"></script>
 </head>
+
 <body>
-    <ui-view theme="material">
-        <ui-header theme="material">
+    <ui-view theme="flat">
+        <ui-header>
             <ui-title>AppJS</ui-title>
         </ui-header>
-        <ui-button theme="material" bg="purple" ontap="disableAll()">Dime</ui-button>
-        <ui-button theme="material" bg="purple" ontap="disableAll()">Que</ui-button>
-        <ui-button theme="material" bg="purple" ontap="disableAll()">Quieres</ui-button>
+        <ui-button ontap="disableAll()">Dime</ui-button>
+        <ui-button bg="purple" ontap="disableAll()">Que</ui-button>
+        <ui-button ontap="disableAll()">Quieres</ui-button>
+        <ui-button  bg="purple" ontap="disableAll()">Hacer</ui-button>
     </ui-view>
 
 
