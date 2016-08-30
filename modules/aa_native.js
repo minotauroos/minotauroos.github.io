@@ -19,8 +19,6 @@ String.prototype.replaceAll = function(f, r) {
 String.prototype.replaceAt = function(index, character) {
     return this.substr(0, index) + character + this.substr(index + character.length);
 }
-
-
 _ = {
     log: function(argument, type) {
         if (_.tmp_hiddenlog == undefined) {

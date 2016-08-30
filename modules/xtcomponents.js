@@ -223,7 +223,7 @@ $(function (argument) {
                             "transition": "all 0.6s ease-out",
                             "margin-left": "1.5vw",
                             "margin-top": "1vh",
-                            "box-shadow": "0 2px 5px 0 rgba(0, 0, 0, 0.36)"
+                            "box-shadow": "rgba(0, 0, 0, 0.57) 0px 2px 5px 0px"
                         });
                         if (obj[0].hasAttribute("no-anim")) { } else {
                             if (_.device.isTouch()) {
@@ -268,7 +268,7 @@ $(function (argument) {
                     case "material":
                         obj.css({
                             "background": "rgb(43, 117, 237)",
-                            "box-shadow": "0 2px 5px 0 rgba(0, 0, 0, 0.26)",
+                            "box-shadow": "rgba(0, 0, 0, 0.50) 0px 2px 5px 0px",
                             "color": "#fff"
                         });
                         break;
