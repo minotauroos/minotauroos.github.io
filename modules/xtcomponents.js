@@ -65,14 +65,48 @@ $(function (argument) {
             "background": "blue"
 
         });
+        registerQuickElement("ui-input", {
+            "position": "relative",
+            "float": "left",
+            "background": "white",
+            "display": "block",
+            "width": "100%",
+            "height": "7vh"
+        }, function (elem) {
+            $(elem).html('<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>');
+            $(xtag.queryChildren(elem, 'input')[0]).css({
+                "background": "inherit",
+                "color": "inherit",
+                "-webkit-box-sizing": "border-box",
+                "-moz-box-sizing": "border-box",
+                "box-sizing": "border-box",
+                "-webkit-transform": "translate3d(0, 0, 0)",
+                "outline": "none",
+                "border": "0",
+                "width": "100%",
+                "height": "100%",
+                "font-size": "18px",
+                "resize": "none",
+                "font-family": "inherit"
+            });
+            if (elem.hasAttribute("submit")) {
+                $(xtag.queryChildren(elem, 'input')[0]).on("keyup", function (e) {
+                    if (e.which == 13) {
+                        _.call($(elem).attr("submit"), window, $(this).val(), this);
+                    }
+                });
+            }
+        });
     }
 
-    function registerQuickElement(name, style) {
+    function registerQuickElement(name, style, post) {
         xtag.register(name, {
             lifecycle: {
                 created: function () {
                     $(this).css(defaultStyling);
                     $(this).css(style); //predefined
+                    if (post)
+                        post(this)
                     var that = this;
                     if (this.hasAttribute("theme")) {
                         setAttr(that, "theme", $(that).attr("theme"));
@@ -83,15 +117,25 @@ $(function (argument) {
                     }
                     _.each(this.attributes, function (attr) {
                         //theme attr must be proccessed first
-                        if (attr.name != "theme")
+                        if (attr.name != "theme" && attr.name != "static")
                             setAttr(that, attr.name, attr.value);
 
                     });
+                    if (this.hasAttribute("static")) {
+                        console.log($(this).prop("tagName"));
 
+                            //$(this).css("width", $(this).css("width"));
+                            $(this).css("height", $(this).css("height"));
+                        
+                    } else {
+                        if (!this.hasAttribute("no-static")) { //no theme
+                            $(this).css("height", $(this).css("height"));
+                        }
+                    }
 
                 },
                 attributeChanged: function (attrName, oldValue, newValue) {
-                    console.log(attrName + ", " + newValue);
+                    // console.log(attrName + ", " + newValue);
                     setAttr(this, attrName, newValue);
                 }
             },
@@ -220,10 +264,10 @@ $(function (argument) {
                             "padding-right": "6vh",
                             "padding-top": "3vh",
                             "padding-bottom": "3vh",
-                            "transition": "all 0.6s ease-out",
                             "margin-left": "1.5vw",
                             "margin-top": "1vh",
-                            "box-shadow": "rgba(0, 0, 0, 0.57) 0px 2px 5px 0px"
+                            "box-shadow": "rgba(0, 0, 0, 0.57) 0px 2px 5px 0px",
+                            "transition": "background 0.6s ease-out"
                         });
                         if (obj[0].hasAttribute("no-anim")) { } else {
                             if (_.device.isTouch()) {
@@ -241,7 +285,7 @@ $(function (argument) {
                                 });
                             } else {
                                 obj.on("mousedown", function (argument) {
-                                    console.log("mousedown");
+
                                     if (obj.data("default-backcolor") == undefined)
                                         obj.data("default-backcolor", $(obj).css("background"));
                                     $(obj).css({
@@ -258,7 +302,7 @@ $(function (argument) {
                         break;
                 }
                 break;
-            
+
             case "UI-HEADER":
                 switch (theme) {
                     case "flat":
@@ -295,6 +339,28 @@ $(function (argument) {
                     case "ios":
                         obj.css({
                             "background": "repeating-linear-gradient(   to right,   #b2c1d9,   #b2c1d9 5px,   #bcc8db 5px,   #bcc8db 10px )"
+                        });
+                        break;
+                }
+                break;
+            case "UI-INPUT":
+                switch (theme) {
+                    case "flat":
+                        obj.css({
+                            "background": "rgb(45, 81, 11)"
+                        });
+                    case "material":
+                        obj.css({
+                            "background": "white",
+                            "box-shadow": "rgba(0, 0, 0, 0.16) 0px 2px 5px 0px",
+                            "color": "black"
+                        });
+                        break;
+                    case "ios":
+                        obj.css({
+                            "background": "linear-gradient(to bottom, rgba(162,181,202,1) 0%,rgba(54,92,149,1) 100%)",
+                            "box-shadow": "rgba(0, 0, 0, 0.84) 0px 0px 5px 1px",
+                            "color": "#fff"
                         });
                         break;
                 }

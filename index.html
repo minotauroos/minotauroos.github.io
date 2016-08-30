@@ -15,23 +15,33 @@
 </head>
 
 <body>
-    <ui-view theme="material">
+    <ui-view static theme="material">
         <ui-header>
             <ui-title>AppJS</ui-title>
         </ui-header>
-        <ui-button ontap="">Dummy</ui-button>
+        <ui-split height="5px"></ui-split>
+        <ui-input submit="console.log"></ui-input>
+        <ui-button>Dummy</ui-button>
         <ui-button ontap="window.location.reload()">Reboot</ui-button>
-        <ui-button ontap="">Dummy</ui-button>
-        <ui-button ontap="">Dummy</ui-button>
+        <ui-button ontap="play()">Dummy</ui-button>
+        <ui-button>Dummy</ui-button>
         <ui-split></ui-split>
-        <ui-card ontap="">
-           <ui-div width="100%" height="5vh" center-content>Item</ui-div>
-           <ui-div width="100%" height="5vh" center-content>Item</ui-div>
+        <ui-card no-static>
+            <ui-div width="100%" height="5vh" center-content>Item</ui-div>
+            <ui-div width="100%" height="5vh" center-content>Item</ui-div>
         </ui-card>
     </ui-view>
 
 
 
 </body>
+<script>
+    function play(){
+        _.youtube.load({
+            id :"pdN3fM6D774",
+            autoplay : true
+        });
+    }
+</script>
 
 </html>
