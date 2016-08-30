@@ -13,14 +13,19 @@
 </head>
 
 <body>
-    <ui-view theme="flat">
+    <ui-view theme="material">
         <ui-header>
             <ui-title>AppJS</ui-title>
         </ui-header>
         <ui-button ontap="disableAll()">Dime</ui-button>
-        <ui-button bg="purple" ontap="disableAll()">Que</ui-button>
+        <ui-button ontap="disableAll()">Que</ui-button>
         <ui-button ontap="disableAll()">Quieres</ui-button>
-        <ui-button  bg="purple" ontap="disableAll()">Hacer</ui-button>
+        <ui-button ontap="disableAll()">Hacer</ui-button>
+        <ui-split></ui-split>
+        <ui-card ontap="disableAll()">
+           <ui-div width="100%" height="5vh" center-content>Item</ui-div>
+           <ui-div width="100%" height="5vh" center-content>Item</ui-div>
+        </ui-card>
     </ui-view>
 
 

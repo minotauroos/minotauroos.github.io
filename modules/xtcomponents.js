@@ -11,6 +11,16 @@ $(function (argument) {
             "position": "relative",
             "z-index": "10"
         });
+        registerQuickElement("ui-card", {
+            "width": "94vw",
+            "position": "relative",
+            "box-shadow": "rgba(0, 0, 0, 0.14902) 0px 0px 4px 2px",
+            "background": "rgb(255, 255, 255)",
+            "float": "left",
+            "margin-left": "2vw",
+            "margin-top": "20px",
+            "padding": "3%"
+        });
         registerQuickElement("ui-title", {
             "width": "30%",
             "height": "100%",
@@ -22,6 +32,20 @@ $(function (argument) {
             "align-content": "center",
             "flex-direction": "column",
             "text-align": "center"
+        });
+        registerQuickElement("ui-split", {
+            "width": "100%",
+            "height": "1px",
+            "position": "relative",
+            "float": "left",
+            "background": "",
+            "display": "block"
+        });
+        registerQuickElement("ui-div", {
+            "position": "relative",
+            "float": "left",
+            "background": "",
+            "display": "block"
         });
         registerQuickElement("ui-button", {
             "position": "relative",
@@ -93,6 +117,11 @@ $(function (argument) {
                 });
                 obj.data("default-backcolor", value)
                 break;
+            case "width":
+                obj.css({
+                    "width": value
+                });
+                break;
             case "theme":
                 setTheme(obj, value);
                 break;
@@ -146,6 +175,9 @@ $(function (argument) {
                         });
                         break;
                 }
+                break;
+            default:
+                obj.css(attName, value);
                 break;
         }
     }
@@ -226,6 +258,7 @@ $(function (argument) {
                         break;
                 }
                 break;
+            
             case "UI-HEADER":
                 switch (theme) {
                     case "flat":
@@ -234,7 +267,7 @@ $(function (argument) {
                         });
                     case "material":
                         obj.css({
-                            "background": "#0051d4",
+                            "background": "rgb(43, 117, 237)",
                             "box-shadow": "0 2px 5px 0 rgba(0, 0, 0, 0.26)",
                             "color": "#fff"
                         });
@@ -259,7 +292,7 @@ $(function (argument) {
                             "background": "#fafafa"
                         });
                         break;
-                        case "ios":
+                    case "ios":
                         obj.css({
                             "background": "repeating-linear-gradient(   to right,   #b2c1d9,   #b2c1d9 5px,   #bcc8db 5px,   #bcc8db 10px )"
                         });
