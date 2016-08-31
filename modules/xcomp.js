@@ -5,10 +5,11 @@ $(function (argument) {
             "height": "100vh",
             "position": "relative",
             "z-index": "1"
-        });
+        }, { canStatic: false });
         registerQuickElement("ui-header", {
             "width": "100vw",
-            "height": "7vh",
+            "height": "9vh",
+            "max-height": "60px",
             "position": "relative",
             "z-index": "10"
         });
@@ -23,7 +24,9 @@ $(function (argument) {
             "padding": "3%"
         }, { canStatic: false });
         registerQuickElement("ui-title", {
-            "width": "30%",
+            "width": "auto",
+            "padding-left": "2%",
+            "padding-right": "2%",
             "height": "100%",
             "position": "relative",
             "float": "left",
@@ -55,9 +58,11 @@ $(function (argument) {
             "align-items": "center",
             "float": "left",
             "font-family": "helvetica, arial, sans-serif",
-            "width": "25vw",
+            "width": "auto",
             "height": "8vh",
-            "background": "blue"
+            "background": "blue",
+            "padding" : "4%",
+            "margin-left" : "1%"
 
         });
         registerQuickElement("ui-input", {
@@ -123,12 +128,27 @@ $(function (argument) {
             "display": "none",
             "background": "",
         }, {
+
                 post: function (elem) {
                     eval($(elem).html());
                     $(elem).remove();
                 },
                 canStatic: false
             });
+
+
+        registerQuickElement("ui-item", {
+            "position": "relative",
+            "float": "left",
+            "background": "",
+            "display": "block",
+            "width": "100%",
+            "height": "auto",
+            "color": "rgb(134, 134, 134)",
+            "font-size": "1.2em",
+            "padding": "4%",
+            "transform": "translateZ(0)"
+        });
         registerQuickElement("ui-div", {
             "position": "relative",
             "float": "left",
@@ -201,6 +221,30 @@ $(function (argument) {
     function setAttr(obj, attName, value) {
         obj = $(obj);
         switch (attName) {
+            case "slide-anim":
+                if (value == "") {
+                    if (_.device.isTouch()) {
+                        obj.on("touchstart", function (argument) {
+                            ultaCoolEffect(obj);
+                        });
+                    } else {
+                        obj.on("mousedown", function (argument) {
+                            ultaCoolEffect(obj);
+                        });
+                    }
+                } else {
+                    if (_.device.isTouch()) {
+                        obj.on("touchstart", function (argument) {
+                            ultaCoolEffect(obj, function () { eval(value); });
+                        });
+                    } else {
+                        obj.on("mousedown", function (argument) {
+                            ultaCoolEffect(obj, function () { eval(value); });
+                        });
+                    }
+                }
+
+                break;
             case "bg":
             case "background":
                 obj.css({
@@ -247,6 +291,9 @@ $(function (argument) {
                     "flex-direction": "column",
                     "text-align": "center"
                 });
+                break;
+            case "add-margin":
+                $(obj).append("<div style='position:absolute;bottom:0;left:0;width:100%;height:0.06em;background-color:black;opacity:0.2;'></div>");
                 break;
             case "no-center-content":
                 obj.css({
@@ -306,13 +353,13 @@ $(function (argument) {
                         obj.css({
                             "background": "#26a69a",
                             "color": "#fff",
-                            "width": "auto",
-                            "padding-left": "6vh",
-                            "padding-right": "6vh",
-                            "padding-top": "3vh",
-                            "padding-bottom": "3vh",
-                            "margin-left": "1.5vw",
-                            "margin-top": "1vh",
+                            //"width": "auto",
+                            //"padding-left": "6vh",
+                            //"padding-right": "6vh",
+                            //"padding-top": "3vh",
+                            //"padding-bottom": "3vh",
+                            //"margin-left": "1.5vw",
+                            //"margin-top": "1vh",
                             "box-shadow": "rgba(0, 0, 0, 0.57) 0px 2px 5px 0px",
                             "transition": "background 0.6s ease-out"
                         });
@@ -443,3 +490,27 @@ $(function (argument) {
     }
 
 });
+
+function ultaCoolEffect(target, callback) {
+    var speed = 400;
+    var effobj = $("<div style='position:absolute;top:0;left:0;width:0%;height:100%;transition:all " + speed + "ms;;opacity:0.2;z-index:10;background:black;'></div>")
+    $(target).append(effobj);
+    setTimeout(function () {
+        effobj.css({
+            "width": "100%"
+        });
+        setTimeout(function () {
+            effobj.css({
+                "width": "0%",
+                "left": "100%"
+            });
+            setTimeout(function () {
+                effobj.remove();
+                if (callback)
+                    callback();
+            }, speed + 1);
+        }, speed + 1);
+    }, 15);
+
+
+}
