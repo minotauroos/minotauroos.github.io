@@ -3,7 +3,8 @@ $(function (argument) {
         registerQuickElement("ui-view", {
             "width": "100vw",
             "height": "100vh",
-            "position": "relative"
+            "position": "relative",
+            "z-index": "1"
         });
         registerQuickElement("ui-header", {
             "width": "100vw",
@@ -20,7 +21,7 @@ $(function (argument) {
             "margin-left": "2vw",
             "margin-top": "20px",
             "padding": "3%"
-        });
+        }, { canStatic: false });
         registerQuickElement("ui-title", {
             "width": "30%",
             "height": "100%",
@@ -36,12 +37,6 @@ $(function (argument) {
         registerQuickElement("ui-split", {
             "width": "100%",
             "height": "1px",
-            "position": "relative",
-            "float": "left",
-            "background": "",
-            "display": "block"
-        });
-        registerQuickElement("ui-div", {
             "position": "relative",
             "float": "left",
             "background": "",
@@ -72,70 +67,122 @@ $(function (argument) {
             "display": "block",
             "width": "100%",
             "height": "7vh"
-        }, function (elem) {
-            $(elem).html('<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>');
-            $(xtag.queryChildren(elem, 'input')[0]).css({
-                "background": "inherit",
-                "color": "inherit",
-                "-webkit-box-sizing": "border-box",
-                "-moz-box-sizing": "border-box",
-                "box-sizing": "border-box",
-                "-webkit-transform": "translate3d(0, 0, 0)",
-                "outline": "none",
-                "border": "0",
-                "width": "100%",
-                "height": "100%",
-                "font-size": "18px",
-                "resize": "none",
-                "font-family": "inherit"
-            });
-            if (elem.hasAttribute("submit")) {
-                $(xtag.queryChildren(elem, 'input')[0]).on("keyup", function (e) {
-                    if (e.which == 13) {
-                        _.call($(elem).attr("submit"), window, $(this).val(), this);
+        }, {
+                post: function (elem) {
+                    $(elem).html('<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>');
+                    $(xtag.queryChildren(elem, 'input')[0]).css({
+                        "background": "inherit",
+                        "color": "inherit",
+                        "-webkit-box-sizing": "border-box",
+                        "-moz-box-sizing": "border-box",
+                        "box-sizing": "border-box",
+                        "-webkit-transform": "translate3d(0, 0, 0)",
+                        "outline": "none",
+                        "border": "0",
+                        "width": "100%",
+                        "height": "100%",
+                        "font-size": "18px",
+                        "resize": "none",
+                        "font-family": "inherit"
+                    });
+                    if (elem.hasAttribute("submit")) {
+                        $(xtag.queryChildren(elem, 'input')[0]).on("keyup", function (e) {
+                            if (e.which == 13) {
+                                _.call($(elem).attr("submit"), window, $(this).val(), this);
+                            }
+                        });
                     }
-                });
+                }
             }
+        );
+        registerQuickElement("menu-icon", {
+            "position": "relative",
+            "float": "left",
+            "display": "",
+            "height": "100%",
+            "width": "15%",
+            "font-size": "2.6em",
+            "color": "white",
+            "background": "",
+            "font-weight": "bold",
+            "cursor": "pointer",
+            "outline": "none",
+            "text-align": "center"
+        }, {
+                post: function (elem) {
+                    $(elem).html("&#x2261;");
+                    setStyle("center-content", elem);
+                    if (document.documentElement.clientHeight < 580) {
+                        $(elem).css("font-size", "2.1em");
+                    }
+                },
+                canStatic: false
+            });
+        registerQuickElement("black-code", {
+            "position": "absolute",
+            "display": "none",
+            "background": "",
+        }, {
+                post: function (elem) {
+                    eval($(elem).html());
+                    $(elem).remove();
+                },
+                canStatic: false
+            });
+        registerQuickElement("ui-div", {
+            "position": "relative",
+            "float": "left",
+            "background": "",
+            "display": "block"
         });
+
     }
 
-    function registerQuickElement(name, style, post) {
+    function registerQuickElement(name, style, opt) {
         xtag.register(name, {
             lifecycle: {
                 created: function () {
                     $(this).css(defaultStyling);
                     $(this).css(style); //predefined
-                    if (post)
-                        post(this)
+                    if (opt == undefined)
+                        opt = {}
+                    if (opt.canStatic == undefined)
+                        opt.canStatic = true;
+                    if (opt.post)
+                        opt.post(this);
                     var that = this;
+                    //Check if element has themes attribute
                     if (this.hasAttribute("theme")) {
+                        //Set it after default element style but not before attr tags style
                         setAttr(that, "theme", $(that).attr("theme"));
                     } else {
-                        if (!this.hasAttribute("no-theme")) { //no theme
+                        //Check if has no-theme, to set it as ui-view theme if it is defined
+                        if (!this.hasAttribute("no-theme")) {
                             setAttr(that, "theme", $(that).closest("ui-view").attr("theme"));
                         }
                     }
+                    //set all attr first execpt theme and static
                     _.each(this.attributes, function (attr) {
                         //theme attr must be proccessed first
                         if (attr.name != "theme" && attr.name != "static")
                             setAttr(that, attr.name, attr.value);
 
                     });
+                    //static must be set after all before
                     if (this.hasAttribute("static")) {
-                        console.log($(this).prop("tagName"));
-
-                            //$(this).css("width", $(this).css("width"));
+                        //some elems can't be static
+                        if (opt.canStatic) {
                             $(this).css("height", $(this).css("height"));
-                        
+                        }
                     } else {
-                        if (!this.hasAttribute("no-static")) { //no theme
+                        //same set as parent
+                        if (!this.hasAttribute("no-static") && opt.canStatic) { //no static
                             $(this).css("height", $(this).css("height"));
                         }
                     }
 
                 },
                 attributeChanged: function (attrName, oldValue, newValue) {
-                    // console.log(attrName + ", " + newValue);
                     setAttr(this, attrName, newValue);
                 }
             },
@@ -149,7 +196,7 @@ $(function (argument) {
                 }
             }
         });
-    }
+    } //END REGISTERELEMENT
 
     function setAttr(obj, attName, value) {
         obj = $(obj);
@@ -224,7 +271,7 @@ $(function (argument) {
                 obj.css(attName, value);
                 break;
         }
-    }
+    } //END SETATTR
 
     function setTheme(obj, theme) {
         obj = $(obj);
@@ -380,5 +427,19 @@ $(function (argument) {
     }
 
     registerElements();
+
+    function setStyle(styleName, elem) {
+        switch (styleName) {
+            case "center-content":
+                $(elem).css({
+                    "display": "flex",
+                    "justify-content": "center",
+                    "align-content": "center",
+                    "flex-direction": "column",
+                    "text-align": "center"
+                });
+                break;
+        }
+    }
 
 });

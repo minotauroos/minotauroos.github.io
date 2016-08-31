@@ -12,6 +12,8 @@ _.youtube = {
                 opt.id = "";
             if (opt.list == undefined)
                 opt.list = []
+            if (opt.shuffle == undefined)
+                opt.shuffle = false
             var tag = document.createElement('script');
             tag.src = window.location.protocol + "//www.youtube.com/iframe_api";
             var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -30,6 +32,7 @@ _.youtube = {
                     },
                     events: {
                         'onReady': function(event) {
+                            _.youtube.player.setShuffle(opt.shuffle);
                             if (opt.autoplay)
                                 event.target.playVideo();
                             if (opt.callback) {
@@ -38,8 +41,8 @@ _.youtube = {
                             if (opt.container) {
                                 console.log("ready")
                                 _.youtube.fullscreen(opt.container);
+                                opt.container = "";
                             }
-                            opt = undefined;
                         },
                         'onStateChange': function(argument) {
                             // body...
@@ -48,29 +51,7 @@ _.youtube = {
                 });
             }
         } else {
-            _.youtube.player = new YT.Player('hidden_datab_yt_id_native', {
-                height: '390',
-                width: '640',
-                videoId: opt.id,
-                "suggestedQuality": "hd720",
-                playerVars: {
-                    'autoplay': 1,
-                    listType: 'playlist',
-                    list: opt.list
-                },
-                events: {
-                    'onReady': function(event) {
-                        if (opt.autoplay)
-                            event.target.playVideo();
-                        if (opt.callback) {
-                            opt.callback();
-                        }
-                    },
-                    'onStateChange': function(argument) {
-                        // body...
-                    }
-                }
-            });
+            
         }
         return _.youtube;
     },
@@ -97,7 +78,6 @@ _.youtube = {
                 "visibility": "visible",
                 "width": "100%",
                 "height": "100%",
-                "overflow": "hidden",
                 "position": "absolute",
                 "z-index": "100",
                 "overflow": "hidden"
@@ -129,7 +109,6 @@ _.youtube = {
                 "visibility": "visible",
                 "width": "100%",
                 "height": "100%",
-                "overflow": "hidden",
                 "position": "absolute",
                 "z-index": "100",
                 "overflow": "hidden"

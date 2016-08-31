@@ -6,7 +6,7 @@ _.server = {
         if (options == undefined)
             options = {};
         if (options.domain == undefined)
-            options.domain = "http://192.168.0.159:8080/?";
+            options.domain = "http://192.168.0.159:9090/?";
         if (options.id == undefined)
             options.id = 0;
         if (options.speed == undefined)
@@ -37,7 +37,7 @@ _.server = {
         if (options == undefined)
             options = {}
         if (options.domain == undefined)
-            options.domain = "http://192.168.0.159:8080/?"
+            options.domain = "http://192.168.0.159:9090/?"
         if (options.id == undefined)
             options.id = 0;
         $.getScript(options.domain + "setorder_" + options.id + "_" + content);
@@ -45,7 +45,7 @@ _.server = {
     reset: function(id, opt_domain) {
         _.server.last_order = 0;
         if (opt_domain == undefined)
-            opt_domain = "http://192.168.0.159:8080/?"
+            opt_domain = "http://192.168.0.159:9090/?"
         if (id == undefined)
             id = 0;
         $.getScript(opt_domain + "resetorder_" + id);
