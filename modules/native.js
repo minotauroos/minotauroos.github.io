@@ -20,6 +20,47 @@ String.prototype.replaceAt = function (index, character) {
     return this.substr(0, index) + character + this.substr(index + character.length);
 }
 _ = {
+    server: {
+        listen: function (opt, callbackFN) {
+            if (opt == undefined)
+                opt = {}
+            if (opt.host == undefined)
+                opt.host = "192.168.0.159";
+            if (opt.receiver == undefined)
+                opt.receiver = "1";
+            if (opt.speed == undefined)
+                opt.speed = 5000;
+            var rndReceiverNumb = (new Date().getTime() + Math.random()).toString().replace(".", "");
+            $.getScript("http://" + opt.host + "/&reset=" + opt.receiver); //reinciar
+            var caller = window["__metaCallback" + rndReceiverNumb] = function (received) {
+                if (window["__metaCallback" + rndReceiverNumb].last == undefined)
+                    window["__metaCallback" + rndReceiverNumb].last = "0";
+                if (window["__metaCallback" + rndReceiverNumb].last != received.split(":/separator/:id")[1]) {
+                    callbackFN(decodeURIComponent(received.split(":/separator/:id")[0]));
+                    window["__metaCallback" + rndReceiverNumb].last = received.split(":/separator/:id")[1];
+                }
+            }
+            var intervaller = setInterval(function () {
+                try {
+                    $.getScript("http://" + opt.host + "/&receive=" + opt.receiver + "&callback=" + "__metaCallback" + rndReceiverNumb).fail(function (jqxhr, settings, exception) {
+                        clearInterval(intervaller);
+                        console.log("err");
+                    });
+                } catch (ex) { console.log(ex.message); clearInterval(intervaller); }
+            }, opt.speed);
+        },
+        send: function (opt) {
+            if (opt == undefined)
+                opt = {}
+            if (opt.host == undefined)
+                opt.host = "192.168.0.159";
+            if (opt.receiver == undefined)
+                opt.receiver = "1";
+            if (opt.message == undefined)
+                opt.message = "nomessage";
+            $.getScript("http://" + opt.host + "/&send=" + opt.receiver + "=" + opt.message);
+        }
+    },
     log: function (argument, type) {
         if (_.tmp_hiddenlog == undefined) {
             _.tmp_hiddenlog = [];

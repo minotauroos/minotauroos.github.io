@@ -4,7 +4,8 @@ $(function (argument) {
             "width": "100vw",
             "height": "100vh",
             "position": "relative",
-            "z-index": "1"
+            "z-index": "1",
+            "overflow": "auto"
         }, { canStatic: false });
         registerQuickElement("ui-header", {
             "width": "100vw",
@@ -61,8 +62,13 @@ $(function (argument) {
             "width": "auto",
             "height": "8vh",
             "background": "blue",
-            "padding" : "4%",
-            "margin-left" : "1%"
+            "padding-left": "5.4vw",
+            "padding-right": "5.4vw",
+            "padding-top": "4%",
+            "padding-bottom": "4%",
+            "margin-left": "1.5vw",
+            "margin-top": "1.5vh",
+            "margin-bottom": "1.5vh"
 
         });
         registerQuickElement("ui-input", {
@@ -70,11 +76,19 @@ $(function (argument) {
             "float": "left",
             "background": "white",
             "display": "block",
-            "width": "100%",
-            "height": "7vh"
+            "width": "calc(100% - 10px)",
+            "height": "7vh",
+            "padding": "2px",
+            "margin-left": "5px"
         }, {
                 post: function (elem) {
-                    $(elem).html('<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>');
+                    var inputado = $('<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>');
+                    inputado.on("focus", function (ev) {
+                        marginado.css("width", "100%");
+                    }).on("blur", function (ev) {
+                        marginado.css("width", "0%");
+                    });
+                    $(elem).append(inputado);
                     $(xtag.queryChildren(elem, 'input')[0]).css({
                         "background": "inherit",
                         "color": "inherit",
@@ -85,11 +99,13 @@ $(function (argument) {
                         "outline": "none",
                         "border": "0",
                         "width": "100%",
-                        "height": "100%",
+                        "height": "calc(100% - 0.13em)",
                         "font-size": "18px",
                         "resize": "none",
                         "font-family": "inherit"
                     });
+                    var marginado = $("<div style='position:absolute;bottom:0;left:0;width:0%;height:0.13em;transition:all 0.2s;background-color:blue;opacity:0.4;'></div>");
+                    $(elem).append(marginado);
                     if (elem.hasAttribute("submit")) {
                         $(xtag.queryChildren(elem, 'input')[0]).on("keyup", function (e) {
                             if (e.which == 13) {
@@ -146,7 +162,10 @@ $(function (argument) {
             "height": "auto",
             "color": "rgb(134, 134, 134)",
             "font-size": "1.2em",
-            "padding": "4%",
+            "padding-left": "4%",
+            "padding-right": "4%",
+            "padding-bottom": "3vh",
+            "padding-top": "3vh",
             "transform": "translateZ(0)"
         });
         registerQuickElement("ui-div", {
@@ -492,7 +511,47 @@ $(function (argument) {
 });
 
 function ultaCoolEffect(target, callback) {
+    var on = $(target).attr("slide-anim-callback");
     var speed = 400;
+    var effobj = $("<div style='position:absolute;top:0;left:0%;width:0%;height:100%;transition:all " + speed + "ms;;opacity:0.2;z-index:10;background:black;'></div>")
+    $(target).append(effobj);
+    setTimeout(function () {
+        effobj.css({
+            "width": "100%"
+        });
+        if (on == "first" || on == "1") {
+            setTimeout(function () {
+                if (callback)
+                    callback();
+            }, 100);
+        }
+        setTimeout(function () {
+            effobj.css({
+                "width": "0%",
+                "left": "100%"
+            });
+            if (on == "second" || on == "2") {
+                if (callback)
+                    callback();
+            }
+            setTimeout(function () {
+                effobj.remove();
+                if (on == "" || on == undefined || on == "last" || on == "3") {
+                    if (callback)
+                        callback();
+                }
+
+            }, speed + 1);
+        }, speed + 1);
+    }, 15);
+
+
+}
+function ultaCoolEffectSave(target, callback, sp) {
+    var speed = 400;
+    if (sp)
+        speed = sp;
+
     var effobj = $("<div style='position:absolute;top:0;left:0;width:0%;height:100%;transition:all " + speed + "ms;;opacity:0.2;z-index:10;background:black;'></div>")
     $(target).append(effobj);
     setTimeout(function () {

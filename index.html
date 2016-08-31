@@ -9,7 +9,6 @@
     <script type="text/javascript" src="modules/jquery.js"></script>
     <script type="text/javascript" src="modules/native.js"></script>
     <script type="text/javascript" src="modules/xcomp.js"></script>
-    <script type="text/javascript" src="modules/extra/server.js"></script>
     <script type="text/javascript" src="modules/extra/youtube.js"></script>
 </head>
 
@@ -19,32 +18,68 @@
         getHeight = function(){ $("ui-card").html(document.documentElement.clientHeight); }
     </black-code>
 
-    <ui-view static theme="material">
+    <ui-view shadow="3" static theme="material" id="mainUiView">
         <ui-header>
-            <menu-icon></menu-icon>
+            <menu-icon slide-anim="openmenu()" slide-anim-callback="2"></menu-icon>
             <ui-title>Music</ui-title>
         </ui-header>
         <ui-split height="5px"></ui-split>
-        <ui-button ontap="window.location.reload()">Reboot</ui-button>
-        <ui-button ontap="getHeight()">Listen</ui-button>
+
+        <ui-button slide-anim ontap="listen()">Listen</ui-button>
+        <ui-button ontap="send()">Say Hi</ui-button>
+
         <ui-input margin-top="1%"></ui-input>
         <ui-item slide-anim add-margin>Statico</ui-item>
         <ui-split></ui-split>
         <ui-card>
-            <ui-div width="100%" height="50vh" center-content id="card_youtube"></ui-div>
+            <ui-item slide-anim add-margin>Statico</ui-item>
+            <ui-item slide-anim add-margin>Statico</ui-item>
+            <ui-item slide-anim add-margin>Statico</ui-item>
+            <ui-item slide-anim add-margin>Statico</ui-item>
         </ui-card>
-        
+
     </ui-view>
 
-    <ui-view position="asbsolute" top="0" left="0" static theme="material">
-        <ui-header>
-            <ui-title>Probando titulo grande</ui-title>
-        </ui-header>
+    <ui-view position="absolute" top="0" left="0" static theme="material" z-index="0" width="50%">
         <ui-item slide-anim="window.location.reload()" add-margin ontap="console.log('1')">Reiniciar</ui-item>
         <ui-item slide-anim add-margin ontap="console.log('1')">Solo prueba no hace nada</ui-item>
     </ui-view>
 
 
 </body>
+<script>
+    function listen(){
+        _.server.listen(undefined,function(w){
+            $($("ui-item")[0]).html(w);
+        });
+    }
+    function send(){
+        _.server.send({
+            message : "Hola"
+        });
+    }
+    function openmenu(){
+        if(window.currentStateOfTheSecondView==undefined){
+            currentStateOfTheSecondView="hidden";
+        }
+            
+            if(currentStateOfTheSecondView=="hidden"){
+                $("#mainUiView").css({
+                    "transition" : "all 0.3s",
+                    "transform" : "translate(50%)"
+                }).on("touchstart mousedown", function(ev){
+                    if(ev.target.nodeName!="MENU-ICON")
+                    openmenu();
+                });
+                currentStateOfTheSecondView = "visible"
+            }else{
+                 $("#mainUiView").css({
+                    "transform" : "translate(0%)"
+                }).off("touchstart mousedown");
+                currentStateOfTheSecondView = "hidden"
+            }
+        
+    }
+</script>
 
 </html>
