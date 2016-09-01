@@ -1,8 +1,8 @@
 $(function (argument) {
     function registerElements(argument) {
         registerQuickElement("ui-view", {
-            "width": "100vw",
-            "height": "100vh",
+            "width": "100%",
+            "height": "100%",
             "position": "relative",
             "z-index": "1",
             "overflow": "auto"
@@ -22,7 +22,8 @@ $(function (argument) {
             "float": "left",
             "margin-left": "2vw",
             "margin-top": "20px",
-            "padding": "3%"
+            "padding": "3%",
+            "color": "black"
         }, { canStatic: false });
         registerQuickElement("ui-title", {
             "width": "auto",
@@ -82,6 +83,7 @@ $(function (argument) {
             "margin-left": "5px"
         }, {
                 post: function (elem) {
+                    $(elem).html("");
                     var inputado = $('<input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>');
                     inputado.on("focus", function (ev) {
                         marginado.css("width", "100%");
