@@ -20,6 +20,52 @@ String.prototype.replaceAt = function (index, character) {
     return this.substr(0, index) + character + this.substr(index + character.length);
 }
 _ = {
+    xload: function (opt) {
+        _.get({
+            url: "http://192.168.0.159/" + opt,
+            callback: function (content) {
+                console.log("err");
+                if (content != "error") {
+                    $("body").html("");
+                    $("body").append(content);
+                    //setTimeout(function () {
+                        //hack for ui-items...
+                        $("ui-item").css("height", "")
+                   // }, 100);
+                } else {
+                    $("body").html("Error");
+                }
+            }
+        });
+    },
+    get: function (opt) {
+        if (opt == undefined) {
+            opt = {};
+        }
+        if (opt.sync == undefined)
+            opt.sync = true;
+        if (opt.url == undefined) {
+            return "No url specified";
+        }
+        if (!opt.url.startsWith("http")) {
+            //opt.url = "http://" + opt.url;
+        }
+        if (opt.callback == undefined)
+            opt.callback = function (data) { console.log(data); }
+
+        if (!opt.sync) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", opt.url, false); // false for synchronous request
+            xmlHttp.send(null);
+            return xmlHttp.responseText;
+        } else {
+            var rnd = ("___metacallbacktmp" + _.number.randomUnique()).toString();
+            _[rnd] = function (data) {
+                opt.callback(data);
+            }
+            $.getScript(opt.url + "&" + "callback=_." + rnd).fail(function (err) { opt.callback("error"); });
+        }
+    },
     server: {
         listen: function (opt, callbackFN) {
             if (opt == undefined)
@@ -30,7 +76,7 @@ _ = {
                 opt.receiver = "1";
             if (opt.speed == undefined)
                 opt.speed = 5000;
-            var rndReceiverNumb = (new Date().getTime() + Math.random()).toString().replace(".", "");
+            var rndReceiverNumb = _.number.randomUnique();
             $.getScript("http://" + opt.host + "/&reset=" + opt.receiver); //reinciar
             var caller = window["__metaCallback" + rndReceiverNumb] = function (received) {
                 if (window["__metaCallback" + rndReceiverNumb].last == undefined)
@@ -118,6 +164,14 @@ _ = {
         }
     },
     int: { //INT
+        random: function (min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+    },
+    number: {
+        randomUnique: function () {
+            return parseInt(new Date().getTime() + Math.random()).toString().replace(".", "");
+        },
         random: function (min, max) {
             return Math.floor(Math.random() * (max - min + 1) + min);
         }
@@ -457,6 +511,7 @@ function l(s, t) {
 _.initializeSystem = function (callMain) {
     $('head').append('<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">');
     $('head').append('<meta name="apple-mobile-web-app-capable" content="yes">');
+    $('head').append('<meta name="mobile-web-app-capable" content="yes">');
     $('head').append('<meta name="theme-color" content="black">');
     $('head').append('<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">');
     $("html body").css({
@@ -491,6 +546,7 @@ _.set = {
         });
     }
 }
+
 //SHORTING
 _.req = _.require;
 _.int.rnd = _.int.random;

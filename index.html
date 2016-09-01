@@ -1,46 +1,49 @@
 <!DOCTYPE html>
-<html style="height:100%;width:100%;">
+<html>
 
 <head>
     <title>App</title>
-    <style type="text/css">
-
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
     </style>
     <script type="text/javascript" src="modules/jquery.js"></script>
     <script type="text/javascript" src="modules/native.js"></script>
     <script type="text/javascript" src="modules/xcomp.js"></script>
-    <script type="text/javascript" src="modules/extra/youtube.js"></script>
 </head>
 
-<body style="height:100%;width:100%;">
+<body>
     <ui-view shadow="3" static theme="material" id="mainUiView">
-        <ui-header>
+        <ui-header static>
             <menu-icon slide-anim="openmenu()" slide-anim-callback="2"></menu-icon>
-            <ui-title>Music</ui-title>
+            <ui-title>Header with hamburger</ui-title>
         </ui-header>
         <ui-split height="5px"></ui-split>
 
-        <ui-button slide-anim ontap="listen()">Listen</ui-button>
-        <ui-button ontap="send()">Say Hi</ui-button>
-
+        <ui-button slide-anim ontap="listen()">Button 2 anims</ui-button>
+        <ui-button ontap="send()">Button 1 anim</ui-button>
+        <ui-item no-margin>Animated input</ui-item>
         <ui-input margin-top="1%"></ui-input>
-        <ui-item slide-anim add-margin>Statico</ui-item>
         <ui-split></ui-split>
-        <ui-card>
-            <ui-item slide-anim add-margin>Statico</ui-item>
-            <ui-item slide-anim add-margin>Statico</ui-item>
-            <ui-item slide-anim add-margin>Statico</ui-item>
-            <ui-item slide-anim add-margin>Statico</ui-item>
+        <ui-card add-margin>
+            <ui-item slide-anim>Item with parent add margin</ui-item>
+            <ui-item slide-anim no-margin>No margin</ui-item>
+            <ui-item>No anim</ui-item>
+            <ui-item slide-anim>Default</ui-item>
         </ui-card>
 
     </ui-view>
 
     <ui-view position="absolute" top="0" left="0" static theme="material" z-index="0" width="50%">
-        <ui-item slide-anim="window.location.reload()" add-margin ontap="console.log('1')">Reiniciar</ui-item>
-        <ui-item slide-anim add-margin ontap="console.log('1')">Solo prueba no hace nada</ui-item>
+        <ui-item slide-anim="window.location.reload()" add-margin slide-anim-callback="1">Reiniciar</ui-item>
+        <ui-item slide-anim ontap="console.log('1')">Solo prueba no hace nada</ui-item>
     </ui-view>
-</body>
-<script>
+
+    <script>
     function listen(){
         _.server.listen(undefined,function(w){
             $($("ui-item")[0]).html(w);
@@ -72,6 +75,13 @@
                 currentStateOfTheSecondView = "hidden"
             }
         
+    }
+</script>
+
+</body>
+<script>
+    function main(){
+      //_.xload("interfaces/demo.html")
     }
 </script>
 

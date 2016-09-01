@@ -1,0 +1,60 @@
+  <ui-view shadow="3" static theme="material" id="mainUiView">
+    <ui-header>
+        <menu-icon slide-anim="openmenu()" slide-anim-callback="2"></menu-icon>
+        <ui-title>Header with hamburger</ui-title>
+    </ui-header>
+    <ui-split height="5px"></ui-split>
+
+    <ui-button slide-anim ontap="listen()">Button 2 anims</ui-button>
+    <ui-button ontap="send()">Button 1 anim</ui-button>
+    <ui-item no-margin>Animated input</ui-item>
+    <ui-input margin-top="1%"></ui-input>
+    <ui-split></ui-split>
+    <ui-card add-margin>
+        <ui-item slide-anim>Item with parent add margin</ui-item>
+        <ui-item slide-anim no-margin>No margin</ui-item>
+        <ui-item>No anim</ui-item>
+        <ui-item slide-anim>Default</ui-item>
+    </ui-card>
+
+</ui-view>
+
+<ui-view position="absolute" top="0" left="0" static theme="material" z-index="0" width="50%">
+    <ui-item slide-anim="window.location.reload()" add-margin slide-anim-callback="1">Reiniciar</ui-item>
+    <ui-item slide-anim ontap="console.log('1')">Solo prueba no hace nada</ui-item>
+</ui-view>
+
+<script>
+    function listen(){
+        _.server.listen(undefined,function(w){
+            $($("ui-item")[0]).html(w);
+        });
+    }
+    function send(){
+        _.server.send({
+            message : "Hola"
+        });
+    }
+    function openmenu(){
+        if(window.currentStateOfTheSecondView==undefined){
+            currentStateOfTheSecondView="hidden";
+        }
+            
+            if(currentStateOfTheSecondView=="hidden"){
+                $("#mainUiView").css({
+                    "transition" : "all 0.3s",
+                    "transform" : "translate(50%)"
+                }).on("touchstart mousedown", function(ev){
+                    if(ev.target.nodeName!="MENU-ICON")
+                    openmenu();
+                });
+                currentStateOfTheSecondView = "visible"
+            }else{
+                 $("#mainUiView").css({
+                    "transform" : "translate(0%)"
+                }).off("touchstart mousedown");
+                currentStateOfTheSecondView = "hidden"
+            }
+        
+    }
+</script>

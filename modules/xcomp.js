@@ -161,15 +161,24 @@ $(function (argument) {
             "background": "",
             "display": "block",
             "width": "100%",
-            "height": "auto",
             "color": "rgb(134, 134, 134)",
             "font-size": "1.2em",
-            "padding-left": "4%",
-            "padding-right": "4%",
+            "padding-left": "4vw",
+            "padding-right": "4vw",
             "padding-bottom": "3vh",
             "padding-top": "3vh",
+            "height": "",
             "transform": "translateZ(0)"
-        });
+        }, {
+                post: function (elem) {
+                    if ($(elem).parent().attr("add-margin")) {
+                        if (!(elem.hasAttribute("no-margin"))) {
+                            $(elem).attr("add-margin", "");
+                        }
+                    }
+
+                }
+            });
         registerQuickElement("ui-div", {
             "position": "relative",
             "float": "left",
@@ -182,7 +191,7 @@ $(function (argument) {
     function registerQuickElement(name, style, opt) {
         xtag.register(name, {
             lifecycle: {
-                created: function () {
+                inserted: function () {
                     $(this).css(defaultStyling);
                     $(this).css(style); //predefined
                     if (opt == undefined)
@@ -214,14 +223,21 @@ $(function (argument) {
                         //some elems can't be static
                         if (opt.canStatic) {
                             $(this).css("height", $(this).css("height"));
+                            $(this).css("padding-top", $(this).css("padding-top"));
                         }
                     } else {
                         //same set as parent
                         if (!this.hasAttribute("no-static") && opt.canStatic) { //no static
-                            $(this).css("height", $(this).css("height"));
+                            if ($(this).closest("ui-view").attr("static")=="") {
+                                $(this).css("height", $(this).css("height"));
+                                $(this).css("padding-top", $(this).css("padding-top"));
+                            }
+
                         }
                     }
 
+                },
+                created: function () {
                 },
                 attributeChanged: function (attrName, oldValue, newValue) {
                     setAttr(this, attrName, newValue);
@@ -314,7 +330,20 @@ $(function (argument) {
                 });
                 break;
             case "add-margin":
-                $(obj).append("<div style='position:absolute;bottom:0;left:0;width:100%;height:0.06em;background-color:black;opacity:0.2;'></div>");
+                if ($(obj).attr("add-margin") == "" || $(obj).attr("add-margin") == "yes") {
+                    $(obj).attr("add-margin", "already_added");
+                    $(obj).append("<div class='_xcomp_predefined_class_margin' style='position:absolute;bottom:0;left:0;width:100%;height:0.06em;background-color:black;opacity:0.2;'></div>");
+                }
+                if ($(obj).attr("add-margin") == "no") {
+                    $(obj).find("._xcomp_predefined_class_margin").remove();
+                }
+                break;
+            case "no-margin":
+                if ($(obj).attr("no-margin") == "" || $(obj).attr("no-margin") == "yes") {
+                    $(obj).attr("no-margin", "already_removed");
+                    $(obj).append("<div class='_xcomp_predefined_class_margin' style='position:absolute;bottom:0;left:0;width:100%;height:0.06em;background-color:black;opacity:0.2;'></div>");
+                }
+                $(obj).find("._xcomp_predefined_class_margin").remove();
                 break;
             case "no-center-content":
                 obj.css({
@@ -334,6 +363,10 @@ $(function (argument) {
                         });
                         break;
                 }
+                break;
+            case "static":
+                //some elems can't be static
+                $(this).css("height", $(this).css("height"));
                 break;
             default:
                 obj.css(attName, value);
@@ -574,4 +607,4 @@ function ultaCoolEffectSave(target, callback, sp) {
     }, 15);
 
 
-}
+};

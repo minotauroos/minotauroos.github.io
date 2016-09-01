@@ -1,0 +1,61 @@
+var fs = require("fs");
+const spawn = require('child_process').spawn;
+
+console.log("Welcome to Tooler!");
+console.log("   Available commands : bundle [listoffiles] | server");
+
+
+
+
+process.stdin.resume();
+process.stdin.setEncoding('utf8');
+var util = require('util');
+
+process.stdin.on('data', function (text) {
+    //console.log('received data:', util.inspect(text.replace("\r\n", "")));
+    processCommand(text.replace("\r\n", ""));
+    if (text === 'quit\r\n') {
+        done();
+    }
+});
+
+function done() {
+    console.log('Now that process.stdin is paused, there is nothing more to do.');
+    process.exit();
+}
+
+
+
+
+function processCommand(command) {
+    switch (command.split(" ")[0]) {
+        case "bundle":
+            switch (command.split(" ")[1]) {
+                case "":
+                case undefined:
+                default:
+                    var listOfFiles = ["modules/jquery.js", "modules/native.js", "modules/xcomp.js", "modules/extra/youtube.js"];
+                    var finalOutput = "";
+                    for (var curr = 0; curr < listOfFiles.length; curr++) {
+                        finalOutput += fs.readFileSync(listOfFiles[curr]);
+                    }
+                    fs.writeFileSync("modules/bundle.js", finalOutput);
+                    console.log("Bundled");
+                    break;
+            }
+            break;
+        case "server":
+            const spawn = require('child_process').spawn;
+            const ls = spawn('node', ['b:/projects/cloud/server.js',"b:/projects/minotauroos"]);
+            ls.stdout.on('data', (data) => {
+                console.log(`stdout: ${data}`);
+            });
+            ls.stderr.on('data', (data) => {
+                console.log(`stderr: ${data}`);
+            });
+            ls.on('close', (code) => {
+                console.log(`child process exited with code ${code}`);
+            });
+            break;
+    }
+}
